@@ -12,7 +12,7 @@
 ### Key Objectives:
 
 1. **Automate Grading Process:**
-    - Utilize Canvas API integration to automatically publish grades to students.
+    - Utilize Canvas API integration to automatically pull, grade, and if there is tine publish grades to students.
     - Ensure comprehensive inclusion of comments during the grading process.
 
 2. **Detect Potential Cheating:**

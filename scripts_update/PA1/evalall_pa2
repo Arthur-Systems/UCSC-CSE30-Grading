@@ -1,0 +1,61 @@
+#! /bin/bash
+
+MAIN=python3
+
+EXITCODE=0
+AVEGRADE=0
+TOTALGRADE=0
+COUNT=0
+
+DIR="../submissions"
+DATA="data"
+ERRORS_DIR="./errors"
+
+TEST="test1.py"
+REPORT="grade.txt"
+CLASSREPORT="report.csv"
+TMP="tmp"
+
+# Ensure errors directory exists
+mkdir -p $ERRORS_DIR
+
+# iterates through directory list and checks if directory exists
+for i in $(ls $DIR)
+do
+    STUDENT_ERROR_FILE="${ERRORS_DIR}/${i}_errors.txt"
+    if [ -d "${DIR}/${i}" ]
+    then
+        GRADE=0
+        echo "Directory name $i:
+**********************************
+" > $REPORT
+
+        # copies files
+        cp ${DIR}/${i}/*.py ./
+        cp $DATA/* .
+
+        # evaluates student's files
+        echo "0" > $TMP
+        $MAIN $TEST >> $REPORT 2> $STUDENT_ERROR_FILE
+        echo >> $REPORT
+        ((GRADE = GRADE + $(cat $TMP)))
+        echo ${i}, $GRADE
+        echo ${i}, $GRADE >> $CLASSREPORT
+        ((TOTALGRADE = TOTALGRADE + $GRADE))
+        ((COUNT++))
+
+        # Copies report and cleans directory
+        mv $REPORT ${DIR}/${i}
+        rm tmp *.py
+    else
+        # Error handling for non-existing directory
+        echo "$i: directory does not exist" >&2
+        echo "$i: directory does not exist" > "${ERRORS_DIR}/general_errors.txt"
+    fi
+done
+
+# calculates average grade
+((AVEGRADE = TOTALGRADE / COUNT))
+echo "Average grade is $AVEGRADE"
+
+exit $EXITCODE
