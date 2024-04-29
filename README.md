@@ -15,18 +15,12 @@
     - Utilize Canvas API integration to automatically pull, grade, and if there is tine publish grades to students.
     - Ensure comprehensive inclusion of comments during the grading process.
 
-2. **Detect Potential Cheating:**
-    - Create a plagiarism detection Software.
-    - Check submissions for instances of code sharing or copying.
-    - Explore ways for checking code, such as function-by-function or
-      block-by-block analysis.
-    - Implement a system will flag potential cheating instances for manual review.
 
-3. **Review Attendance Messages:**
+2. **Review Attendance Messages:**
     - Evaluate the coherence and relevance of attendance messages submitted by students.
     - Verify the accuracy of submission times for attendance records.
 
-4. **Enhance Test Scripts:**
+3. **Enhance Test Scripts:**
     - Enhance the functionality and effectiveness of test scripts utilized by the auto-grading system.
 
 
