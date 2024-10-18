@@ -1,0 +1,88 @@
+#! /bin/bash
+# evalall_pa2 - grades pa2 for all students
+# cse30
+
+MAIN=python3 # may need to change to python3 or py
+
+EXITCODE=0
+TOTALGRADE=0
+COUNT=0
+
+DIR="../submissions"
+DATA="data"
+
+TEST="test1.py"
+CLASSREPORT="report.csv"
+TMP="tmp"
+
+#
+# iterates through directory list and checks if directory exists
+#
+for i in $(ls $DIR)
+do
+    if [ -d "${DIR}/${i}" ]
+        then
+        GRADE=0
+        STUDENT_DIR="${DIR}/${i}"
+        STUDENT_OUTPUT_DIR="${STUDENT_DIR}/output" # Directory to hold student output files
+
+        # Create output directory if it doesn't exist
+        mkdir -p $STUDENT_OUTPUT_DIR
+
+        # Prepare report path
+        REPORT="${STUDENT_OUTPUT_DIR}/grade.txt"
+
+#
+# makes report
+#
+
+        echo "Directory name $i:
+**********************************
+" > $REPORT
+
+#
+# copies files
+#
+        cp ${STUDENT_DIR}/*.py ./    
+        cp $DATA/* .      
+
+#
+# evaluates student's files
+#
+    
+        echo "0" > $TMP
+        $MAIN $TEST >> $REPORT 2>> $REPORT #&
+        echo >> $REPORT
+        ((GRADE = GRADE + $(cat $TMP)))      
+        echo ${i}, $GRADE
+        echo ${i}, $GRADE >> $CLASSREPORT
+        ((TOTALGRADE = TOTALGRADE + $GRADE))
+        ((COUNT ++))
+
+#
+# cleans directory after grading
+#
+        rm $TMP *.py
+    
+#
+# prints error message if directory does not exist
+#
+    else
+        echo "$i: directory does not exist" >&2
+        echo
+        EXITCODE=2
+    fi
+done
+
+#
+# calculates average grade
+#
+
+if [ $COUNT -gt 0 ]; then
+    AVEGRADE=$((TOTALGRADE / COUNT))
+    echo "Average grade is $AVEGRADE"
+else
+    echo "No valid submissions found."
+fi
+
+exit $EXITCODE

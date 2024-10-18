@@ -1,0 +1,79 @@
+#! /bin/bash
+# evalone_pa2 - grades pa2 for one student
+# cse30
+
+MAIN=python3 # may need to change to python3 or py
+
+EXITCODE=0
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <student_id>"
+    exit 1
+fi
+
+STUDENT_ID=$1
+DIR="../submissions"
+DATA="data"
+
+TEST="test1.py"
+TMP="tmp"
+
+FOUND=0
+
+#
+# iterates through directory list to find matching student ID
+#
+for i in $(ls $DIR)
+do
+    if [[ "$i" == *"_${STUDENT_ID}" ]]; then
+        FOUND=1
+        STUDENT_DIR="${DIR}/${i}"
+        STUDENT_OUTPUT_DIR="./${STUDENT_ID}_output" # Directory in the current folder
+
+        # Create output directory if it doesn't exist
+        mkdir -p $STUDENT_OUTPUT_DIR
+
+        # Prepare report path
+        REPORT="${STUDENT_OUTPUT_DIR}/grade.txt"
+
+        #
+        # makes report
+        #
+
+        echo "Directory name $i:
+**********************************
+" > $REPORT
+
+        #
+        # copies files
+        #
+        cp ${STUDENT_DIR}/*.py .    
+        cp $DATA/* .      
+
+        #
+        # evaluates student's files
+        #
+    
+        echo "0" > $TMP
+        $MAIN $TEST >> $REPORT 2>&1 # Redirects both stdout and stderr to the report file
+        echo >> $REPORT
+        GRADE=$(cat $TMP)
+        echo ${i}, $GRADE >> "${STUDENT_OUTPUT_DIR}/report.csv"
+        
+        #
+        # cleans directory after grading
+        #
+        rm $TMP *.py
+        break
+    fi
+done
+
+#
+# checks if student directory was found and processed
+#
+if [ $FOUND -eq 0 ]; then
+    echo "No directory found for student ID $STUDENT_ID"
+    EXITCODE=2
+fi
+
+exit $EXITCODE

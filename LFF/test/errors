@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/Users/arthur/Documents/GitHub/CSE30_GRADING/PA1/test/testSmartAI.py", line 2, in <module>
+    from player import Player, AI, SmartAI
+ImportError: cannot import name 'AI' from 'player' (/Users/arthur/Documents/GitHub/CSE30_GRADING/PA1/test/player.py)
