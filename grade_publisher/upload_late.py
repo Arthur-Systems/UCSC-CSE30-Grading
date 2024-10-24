@@ -15,6 +15,12 @@ def print_banner():
     print(separator)
     print("\n")
 
+def get_user_input():
+    print("Please enter the following details:")
+    assignment_name = input("Assignment Name: ")
+    csv_file = input("Path to CSV File (default: 'grade.csv'): ") or 'grade.csv'
+    return assignment_name, csv_file
+
 def display_intro():
     print("Welcome to the Canvas Late Penalty Tool!")
     print("This script will help you apply late penalties and update grades for a specific assignment in Canvas.")
@@ -102,11 +108,11 @@ def main():
     config = load_config()
 
     # Set up argument parsing
-    parser = argparse.ArgumentParser(description='Apply late penalties and update grades for a specific assignment in Canvas.')
+    parser = argparse.ArgumentParser(description='Update grades for a specific assignment for all students in Canvas.')
     parser.add_argument('--access_token', help='The Canvas API access token')
     parser.add_argument('--course_id', help='The Canvas course ID')
-    parser.add_argument('assignment_name', help='Name of the assignment to update grades for')
-    parser.add_argument('csv_file', help='Path to the CSV file with student grades')
+    parser.add_argument('--assignment_name', help='Name of the assignment to update grades for')
+    parser.add_argument('--csv_file',default='grade.csv', help='Path to the CSV file with student grades')
 
     args = parser.parse_args()
 
@@ -118,6 +124,13 @@ def main():
         print("Access token and course ID must be provided either via config.json or command-line arguments.")
         sys.exit(1)
 
+    if not args.assignment_name or not args.csv_file:
+        print("Command-line arguments not fully provided, switching to interactive mode.")
+        assignment_name, csv_file = get_user_input()
+    else:
+        assignment_name = args.assignment_name
+        csv_file = args.csv_file
+
     global endpoint
     endpoint = 'https://canvas.ucsc.edu/api/v1'
     headers = {
@@ -126,7 +139,7 @@ def main():
     }
 
     # Get and update grades
-    get_grades(course_id, headers, args.assignment_name, args.csv_file)
+    get_grades(course_id, headers, assignment_name, csv_file)
 
 if __name__ == '__main__':
     main()

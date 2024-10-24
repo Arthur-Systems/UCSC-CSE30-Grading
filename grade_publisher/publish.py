@@ -78,7 +78,6 @@ def main():
 
     # Get the list of assignments
     assignments = get_assignments(course_id, headers, endpoint)
-
     # Find the specified assignment
     assignment = find_assignment(assignments, assignment_name)
     if not assignment:
